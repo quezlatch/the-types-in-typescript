@@ -1,4 +1,4 @@
-namespace TagTypes {
+describe("create generic type for test builders", () => {
     type AccountNumber = string
     type SortCode = string
 
@@ -19,7 +19,15 @@ namespace TagTypes {
         }
     }
 
-    const defaultChequeMethod = buildChequeMethod()
-    const chequeMethodWithSortCode = buildChequeMethod({ sortCode: '123456' })
-    const chequeMethodWithAccountAndSortCode = buildChequeMethod({ account: '12345678', sortCode: '101010' })
-}
+    test("with defaults", () =>
+        expect(buildChequeMethod())
+            .toEqual({ type: 'CHEQUE', account: '00000000', sortCode: '000000' }))
+
+    test("override defaults with sort code", () =>
+        expect(buildChequeMethod({ sortCode: '123456' }))
+            .toEqual({ type: 'CHEQUE', account: '00000000', sortCode: '123456' }))
+
+    test("override defaults with account and sort code", () =>
+        expect(buildChequeMethod({ account: '12345678', sortCode: '101010' }))
+            .toEqual({ type: 'CHEQUE', account: '12345678', sortCode: '101010' }))
+})
