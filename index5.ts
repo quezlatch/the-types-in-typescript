@@ -1,6 +1,6 @@
 import { Digits, Size } from 'taghiro';
 
-namespace TagTypes {
+describe("use taghiro tagged types to add domain constraints", () => {
     type CreditCardNumber = string & Digits & Size<16>
     type AccountNumber = string & Digits & Size<8>
     type SortCode = string & Digits & Size<6>
@@ -31,7 +31,11 @@ namespace TagTypes {
     const sc = '1234567'
     const ac = '102030'
 
-    console.log(refund('Mike', { type: 'CREDITCARD', cardNumber: cn }, 100))
+    test("refund to credit card", () =>
+        expect(refund('Mike', { type: 'CREDITCARD', cardNumber: cn }, 100))
+            .toEqual('transferring 100 to Mike, 1234567812345678'))
 
-    console.log(refund('Mike', { type: 'CHEQUE', account: ac, sortCode: sc }, 100))
-}
+    test("refund to cheque", () =>
+        expect(refund('Mike', { type: 'CHEQUE', account: ac, sortCode: sc }, 100))
+            .toEqual('writing cheque for 100 to Mike, A/C: 1234567 Sort: 10-20-30'))
+})

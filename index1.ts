@@ -1,4 +1,4 @@
-namespace Types {
+describe("extract initial type", () => {
     type PaymentMethod = {
         type: 'CREDITCARD' | 'CHEQUE'
         cardNumber?: string
@@ -21,7 +21,11 @@ namespace Types {
     const ac = '1234567'
     const sc = 102030
 
-    console.log(refund('Mike', { type: 'CREDTCARD', cardNumber: cn }, 100))
+    test("refund to credit card", () =>
+        expect(refund('Mike', { type: 'CREDTCARD', cardNumber: cn }, 100))
+            .toEqual('transferring 100 to Mike, 1234567812345678'))
 
-    console.log(refund('Mike', { type: 'CHEQUE', account: ac, sortCode: sc }, 100))
-}
+    test("refund to cheque", () =>
+        expect(refund('Mike', { type: 'CHEQUE', account: ac, sortCode: sc }, 100))
+            .toEqual('writing cheque for 100 to Mike, A/C: 1234567 Sort: 10-20-30'))
+})

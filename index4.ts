@@ -1,4 +1,4 @@
-namespace Alias2Types {
+describe("add tagged types", () => {
     interface Tag<S extends string> {
         readonly __tag: S;
     }
@@ -30,10 +30,14 @@ namespace Alias2Types {
     }
 
     const cn = '1234567812345678' as CreditCardNumber
-    const sc = '1234567' as SortCode
-    const ac = '102030' as AccountNumber
+    const ac = '1234567' as AccountNumber
+    const sc = '102030' as SortCode
 
-    console.log(refund('Mike', { type: 'CREDITCARD', cardNumber: cn }, 100))
+    test("refund to credit card", () =>
+        expect(refund('Mike', { type: 'CREDITCARD', cardNumber: cn }, 100))
+            .toEqual('transferring 100 to Mike, 1234567812345678'))
 
-    console.log(refund('Mike', { type: 'CHEQUE', account: sc, sortCode: ac }, 100))
-}
+    test("refund to cheque", () =>
+        expect(refund('Mike', { type: 'CHEQUE', account: sc, sortCode: ac }, 100))
+            .toEqual('writing cheque for 100 to Mike, A/C: 1234567 Sort: 10-20-30'))
+})
