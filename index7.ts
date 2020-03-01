@@ -1,33 +1,52 @@
-describe("create generic type for test builders", () => {
-    type AccountNumber = string
-    type SortCode = string
+import { Digits, isDigits, Size, hasSize } from 'taghiro';
 
+describe("types can be verbs as well as nouns", () => {
+    type CreditCardNumber = string & Digits & Size<16>
+    type AccountNumber = string & Digits & Size<8>
+    type SortCode = string & Digits & Size<6>
+
+    type CreditCardMethod = {
+        type: 'CREDITCARD'
+        cardNumber: CreditCardNumber
+    }
     type ChequeMethod = {
         type: 'CHEQUE'
         account: AccountNumber
         sortCode: SortCode
     }
+    type CollectMethod = {
+        type: 'COLLECT'
+        account: AccountNumber
+        sortCode: SortCode
+    }
+    type PaymentMethod = CreditCardMethod | ChequeMethod | CollectMethod
+    type RefundPayment = (name: string, pm: PaymentMethod, amount: number) => string
 
-    type BuilderBitUsingPredefined<T, K extends keyof T> = Partial<Pick<T, Exclude<keyof T, K>>>
-    type BuilderBit<T, K extends keyof T> = { [P in keyof T]?: (P extends K ? never : T[P]) }
-
-    function buildChequeMethod({ account, sortCode }: BuilderBit<ChequeMethod, 'type'> = {}): ChequeMethod {
-        return {
-            type: 'CHEQUE',
-            account: (account || '00000000') as AccountNumber,
-            sortCode: (sortCode || '000000') as SortCode
+    const refund: RefundPayment = function(name, pm, amount) {
+        switch (pm.type) {
+            case 'CREDITCARD':
+                return `transferring ${amount} to ${name}, ${pm.cardNumber}`
+            case 'CHEQUE':
+                const sc = pm.sortCode;
+                const sortCode = `${sc.substring(0, 2)}-${sc.substring(2, 2)}-${sc.substring(4, 2)}`
+                return `writing cheque for ${amount} to ${name}, A/C: ${pm.account} Sort: ${sortCode}`
         }
     }
 
-    test("with defaults", () =>
-        expect(buildChequeMethod())
-            .toEqual({ type: 'CHEQUE', account: '00000000', sortCode: '000000' }))
+    test("credit card details are valid", () => {
+        const cn = '1234567812345678'
+        if (!isDigits(cn) || !hasSize(cn, 16))
+            throw "Not a valid credit card number"
+        console.log(refund('Mike', { type: 'CREDITCARD', cardNumber: cn }, 100))
+    })
 
-    test("override defaults with sort code", () =>
-        expect(buildChequeMethod({ sortCode: '123456' }))
-            .toEqual({ type: 'CHEQUE', account: '00000000', sortCode: '123456' }))
-
-    test("override defaults with account and sort code", () =>
-        expect(buildChequeMethod({ account: '12345678', sortCode: '101010' }))
-            .toEqual({ type: 'CHEQUE', account: '12345678', sortCode: '101010' }))
+    test("bank account details are valid", () => {
+        const ac = '12345679'
+        const sc = '102030'
+        if (!isDigits(ac) || !hasSize(ac, 8))
+            throw "Not a valid account number"
+        if (!isDigits(sc) || !hasSize(sc, 6))
+            throw "Not a valid sort code"
+        console.log(refund('Mike', { type: 'CHEQUE', account: ac, sortCode: sc }, 100))
+    })
 })
