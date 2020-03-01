@@ -1,17 +1,24 @@
 describe("create generic type for test builders", () => {
+    type CreditCardNumber = string
     type AccountNumber = string
     type SortCode = string
 
+    type CreditCardMethod = {
+        type: 'CREDITCARD'
+        cardNumber: CreditCardNumber
+    }
     type ChequeMethod = {
         type: 'CHEQUE'
         account: AccountNumber
         sortCode: SortCode
     }
 
-    type BuilderBit<T, K extends keyof T> = Partial<Pick<T, Exclude<keyof T, K>>>
-    //type BuilderBit<T, K extends keyof T> = { [P in keyof T]?: (P extends K ? never : T[P]) }
+    type BuilderType<T, K extends keyof T> = Partial<Pick<T, Exclude<keyof T, K>>>
 
-    function buildChequeMethod({ account, sortCode }: BuilderBit<ChequeMethod, 'type'> = {}): ChequeMethod {
+    type BuilderCreditCardMethod = BuilderType<CreditCardMethod, 'type'>
+    type BuilderChequeMethod = BuilderType<ChequeMethod, 'type'>
+
+    function buildChequeMethod({ account, sortCode }: BuilderChequeMethod = {}): ChequeMethod {
         return {
             type: 'CHEQUE',
             account: (account || '00000000') as AccountNumber,
