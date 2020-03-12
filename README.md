@@ -17,5 +17,5 @@ The snippits are:
 * [types can be verbs as well as nouns](index7.ts)
 * [example builder type](index8.ts)
 
-The typescript errors have compile errors, and the idea is by correcting them you will gradually
+The typescript snippits have compile errors, and the idea is by correcting them you will gradually
 move towards making illegal states unrepresentable.
