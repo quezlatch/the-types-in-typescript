@@ -13,7 +13,7 @@ describe("create generic type for test builders", () => {
         sortCode: SortCode
     }
 
-    type BuilderType<T, K extends keyof T> = Partial<Pick<T, Exclude<keyof T, K>>>
+    type BuilderType<T, K extends keyof T> = Partial<Omit<T, K>>
 
     type BuilderCreditCardMethod = BuilderType<CreditCardMethod, 'type'>
     type BuilderChequeMethod = BuilderType<ChequeMethod, 'type'>
