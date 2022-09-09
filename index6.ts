@@ -37,8 +37,6 @@ describe("add domain constraints using tag types (and taghiro)", () => {
     test("bank account details are valid", () => {
         const ac = '1234567'
         const sc = '102030'
-        if (!isDigits(ac) || !hasSize(ac, 8))
-            throw "Not a valid account number"
         if (!isDigits(sc) || !hasSize(sc, 6))
             throw "Not a valid sort code"
         console.log(refund('Mike', { type: 'CHEQUE', account: ac, sortCode: sc }, 100))

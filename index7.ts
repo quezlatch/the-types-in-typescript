@@ -22,7 +22,7 @@ describe("types can be verbs as well as nouns", () => {
     type PaymentMethod = CreditCardMethod | ChequeMethod | CollectMethod
     type RefundPayment = (name: string, pm: PaymentMethod, amount: number) => string
 
-    const refund: RefundPayment = function(name, pm, amount) {
+    const refund: RefundPayment = (name, pm, amount) => {
         switch (pm.type) {
             case 'CREDITCARD':
                 return `transferring ${amount} to ${name}, ${pm.cardNumber}`
