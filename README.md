@@ -10,7 +10,7 @@ The snippits are:
 * [vanilla Javascript](index.js)
 * [basic type](index1.ts)
 * [union types](index2.ts)
-* [type alias primitives](index3.ts)
+* [type alias primitives](index3.ts) (this is a trick exercise)
 * [tagged types](index4.ts)
 * [use taghiro for tagged types](index5.ts)
 * [add constraints to tagged types](index6.ts)
